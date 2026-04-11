@@ -4,6 +4,7 @@
 
 static const int kRtcSdaPin = 10;
 static const int kRtcSclPin = 11;
+
 static const uint32_t kI2CFrequencyHz = 100000;
 
 // Operator-editable target time/date.

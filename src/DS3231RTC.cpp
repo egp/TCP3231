@@ -160,7 +160,14 @@ bool DS3231RTC::readRegisters(uint8_t startReg, uint8_t* data, uint8_t len) {
     return false;
   }
 
-  const int received = I2CReadRegister(&bus_, address_, startReg, data, static_cast<int>(len));
+  uint8_t reg = startReg;
+  const int pointerWritten = I2CWrite(&bus_, address_, &reg, 1);
+  if (pointerWritten != 1) {
+    setError("I2C register select failed");
+    return false;
+  }
+
+  const int received = I2CRead(&bus_, address_, data, static_cast<int>(len));
   if (received != static_cast<int>(len)) {
     setError("I2C read failed");
     return false;
