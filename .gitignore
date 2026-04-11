@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build/output
+build/
+dist/
+out/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+
+$ temp
+tmp/
+temp/
+
+# Coverage / test artifacts
+*.gcda
+*.gcno
+*.gcov
+
+# Python helpers, if any
+__pycache__/
+*.pyc

@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compile-examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compile sketches
+        uses: arduino/compile-sketches@v1
+        with:
+          fqbn: arduino:renesas_uno:minima
+          libraries: |
+            - source-path: ./
+            - name: BitBang_I2C
+          sketch-paths: |
+            - examples
+          cli-compile-flags: |
+            - --warnings
+            - all
+          verbose: true
