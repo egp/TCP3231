@@ -1,6 +1,10 @@
 // examples/SetAndReadTime.ino V1
 #include <BitBang_I2C.h>  // v2.2.1 https://github.com/bitbank2/BitBang_I2C
 
+BBI2C i2c_bus(SDA,SCL);
+DS3231RTC rtc(i2c_bus);
+
+
 static const uint16_t kSetYear  = 2026;
 static const uint8_t  kSetMonth = 4;
 static const uint8_t  kSetDay   = 11;
@@ -11,7 +15,7 @@ static const uint8_t  kSetDow   = 7;  // user-defined 1..7
 
 
 void setup() {
-  // put your setup code here, to run once:
+  rtc.begin();
 
 }
 

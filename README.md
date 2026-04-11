@@ -12,7 +12,6 @@ Initial library scaffold. Core RTC implementation is in progress.
 - Support caller-owned `BBI2C` bus instances
 - Read and set date/time
 - Read RTC status flags
-- Read onboard temperature
 - Keep the API small and predictable
 
 ## Dependency
