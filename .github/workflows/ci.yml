@@ -8,21 +8,25 @@ on:
 jobs:
   compile-examples:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fqbn:
+          - arduino:renesas_uno:minima
+          - arduino:renesas_uno:unor4wifi
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Compile sketches
-        uses: arduino/compile-sketches@v1
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
         with:
-          fqbn: arduino:renesas_uno:minima
-          libraries: |
-            - source-path: ./
-            - name: BitBang_I2C
-          sketch-paths: |
-            - examples
-          cli-compile-flags: |
-            - --warnings
-            - all
-          verbose: true
+          version: "1.x"
+
+      - name: Compile examples
+        env:
+          FQBN: ${{ matrix.fqbn }}
+        run: |
+          chmod +x tools/compile-examples.sh
+          ./tools/compile-examples.sh
