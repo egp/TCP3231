@@ -154,27 +154,34 @@ bool DS3231RTC::readRegister(uint8_t reg, uint8_t& value) {
   return readRegisters(reg, &value, 1);
 }
 
+/***********************/
+
 bool DS3231RTC::readRegisters(uint8_t startReg, uint8_t* data, uint8_t len) {
   if (data == nullptr || len == 0) {
     setError("invalid read buffer");
     return false;
   }
 
-  uint8_t reg = startReg;
-  const int pointerWritten = I2CWrite(&bus_, address_, &reg, 1);
-  if (pointerWritten != 1) {
-    setError("I2C register select failed");
-    return false;
-  }
+  for (uint8_t i = 0; i < len; ++i) {
+    uint8_t reg = static_cast<uint8_t>(startReg + i);
 
-  const int received = I2CRead(&bus_, address_, data, static_cast<int>(len));
-  if (received != static_cast<int>(len)) {
-    setError("I2C read failed");
-    return false;
+    const int pointerWritten = I2CWrite(&bus_, address_, &reg, 1);
+    if (pointerWritten != 1) {
+      setError("I2C register select failed");
+      return false;
+    }
+
+    const int received = I2CRead(&bus_, address_, &data[i], 1);
+    if (received != 1) {
+      setError("I2C read failed");
+      return false;
+    }
   }
 
   return true;
 }
+
+/***********************/
 
 bool DS3231RTC::writeRegister(uint8_t reg, uint8_t value) {
   return writeRegisters(reg, &value, 1);

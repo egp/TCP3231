@@ -12,8 +12,8 @@ static const bool     kSetTimeOnBoot = true;
 static const uint16_t kSetYear       = 2026;
 static const uint8_t  kSetMonth      = 4;
 static const uint8_t  kSetDay        = 11;
-static const uint8_t  kSetHour       = 14;
-static const uint8_t  kSetMinute     = 30;
+static const uint8_t  kSetHour       = 15;
+static const uint8_t  kSetMinute     = 13;
 static const uint8_t  kSetSecond     = 0;
 static const uint8_t  kSetDayOfWeek  = 7;  // 1..7, user-defined but sequential
 
