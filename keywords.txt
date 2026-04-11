@@ -5,6 +5,5 @@ begin	KEYWORD2
 readTime	KEYWORD2
 setTime	KEYWORD2
 readStatus	KEYWORD2
-readTemperatureC	KEYWORD2
 clearOscillatorStopFlag	KEYWORD2
 errorString	KEYWORD2
