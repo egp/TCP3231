@@ -8,12 +8,12 @@ static const int kRtcSclPin = 11;
 static const uint32_t kI2CFrequencyHz = 100000;
 
 // Operator-editable target time/date.
-static const bool     kSetTimeOnBoot = true;
+static const bool     kSetTimeOnBoot = false;
 static const uint16_t kSetYear       = 2026;
 static const uint8_t  kSetMonth      = 4;
-static const uint8_t  kSetDay        = 11;
-static const uint8_t  kSetHour       = 15;
-static const uint8_t  kSetMinute     = 13;
+static const uint8_t  kSetDay        = 12;
+static const uint8_t  kSetHour       = 14;
+static const uint8_t  kSetMinute     = 53;
 static const uint8_t  kSetSecond     = 0;
 static const uint8_t  kSetDayOfWeek  = 7;  // 1..7, user-defined but sequential
 

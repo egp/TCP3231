@@ -1,10 +1,10 @@
-#ifndef DS3231RTC_H
-#define DS3231RTC_H
+#ifndef TCP3231_H
+#define TCP3231_H
 
 #include <Arduino.h>
 #include <BitBang_I2C.h>
 
-class DS3231RTC {
+class TCP3231 {
 public:
   struct DateTime {
     uint16_t year;     // 2000..2199
@@ -24,7 +24,7 @@ public:
     bool en32kHz;           // EN32kHz
   };
 
-  explicit DS3231RTC(BBI2C& bus, uint8_t address = 0x68);
+  explicit TCP3231(BBI2C& bus, uint8_t address = 0x68);
 
   bool begin();
   bool readTime(DateTime& dt);
