@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <BitBang_I2C.h>
-#include <DS3231RTC.h>
+#include <TCP3231.h>
 
 static const int kRtcSdaPin = 10;
 static const int kRtcSclPin = 11;
@@ -21,7 +21,7 @@ static const uint8_t  kSetDayOfWeek  = 7;  // 1..7, user-defined but sequential
 static const bool kClearOscillatorStopFlagAfterSet = false;
 
 BBI2C rtcBus{};
-DS3231RTC rtc(rtcBus);
+TCP3231 rtc(rtcBus);
 
 static void printTwoDigits(uint8_t value) {
   if (value < 10) {
@@ -37,7 +37,7 @@ static void printFourDigits(uint16_t value) {
   Serial.print(value);
 }
 
-static void printDateTime(const DS3231RTC::DateTime& dt) {
+static void printDateTime(const TCP3231::DateTime& dt) {
   printFourDigits(dt.year);
   Serial.print('-');
   printTwoDigits(dt.month);
@@ -53,7 +53,7 @@ static void printDateTime(const DS3231RTC::DateTime& dt) {
   Serial.print(dt.dayOfWeek);
 }
 
-static void printStatus(const DS3231RTC::Status& status) {
+static void printStatus(const TCP3231::Status& status) {
   Serial.print("OSF=");
   Serial.print(status.oscillatorStopped ? "1" : "0");
   Serial.print(" BSY=");
@@ -66,7 +66,7 @@ static void printStatus(const DS3231RTC::Status& status) {
   Serial.println(status.en32kHz ? "1" : "0");
 }
 
-static bool sameDateTime(const DS3231RTC::DateTime& a, const DS3231RTC::DateTime& b) {
+static bool sameDateTime(const TCP3231::DateTime& a, const TCP3231::DateTime& b) {
   return a.year == b.year &&
          a.month == b.month &&
          a.day == b.day &&
@@ -77,7 +77,7 @@ static bool sameDateTime(const DS3231RTC::DateTime& a, const DS3231RTC::DateTime
 }
 
 static void printCurrentStatus() {
-  DS3231RTC::Status status{};
+  TCP3231::Status status{};
   if (!rtc.readStatus(status)) {
     Serial.print("readStatus failed: ");
     Serial.println(rtc.errorString());
@@ -88,7 +88,7 @@ static void printCurrentStatus() {
   printStatus(status);
 }
 
-static bool readAndPrintCurrentTime(const char* label, DS3231RTC::DateTime& dt) {
+static bool readAndPrintCurrentTime(const char* label, TCP3231::DateTime& dt) {
   if (!rtc.readTime(dt)) {
     Serial.print(label);
     Serial.print(" readTime failed: ");
@@ -114,7 +114,7 @@ void setup() {
   I2CInit(&rtcBus, kI2CFrequencyHz);
 
   Serial.println();
-  Serial.println("DS3231 SetAndReadTime starting");
+  Serial.println("TCP3231 SetAndReadTime starting");
 
   if (!rtc.begin()) {
     Serial.print("rtc.begin() failed: ");
@@ -126,10 +126,10 @@ void setup() {
 
   printCurrentStatus();
 
-  DS3231RTC::DateTime before{};
+  TCP3231::DateTime before{};
   (void)readAndPrintCurrentTime("Before set:", before);
 
-  const DS3231RTC::DateTime target = {
+  const TCP3231::DateTime target = {
     kSetYear,
     kSetMonth,
     kSetDay,
@@ -156,7 +156,7 @@ void setup() {
     Serial.println("kSetTimeOnBoot is false; skipping setTime");
   }
 
-  DS3231RTC::DateTime after{};
+  TCP3231::DateTime after{};
   if (!readAndPrintCurrentTime("After set: ", after)) {
     while (true) {
       delay(1000);
@@ -198,7 +198,7 @@ void loop() {
   }
   lastPrintMs = nowMs;
 
-  DS3231RTC::DateTime now{};
+  TCP3231::DateTime now{};
   if (!rtc.readTime(now)) {
     Serial.print("loop readTime failed: ");
     Serial.println(rtc.errorString());

@@ -1,4 +1,4 @@
-# DS3231RTC
+# TCP3231
 
 Arduino library for the Maxim/Analog Devices DS3231 RTC using `BitBang_I2C` and a caller-owned `BBI2C` bus object.
 
@@ -28,7 +28,7 @@ This library depends on `BitBang_I2C`.
 
 ```cpp
 #include <BitBang_I2C.h>
-#include <DS3231RTC.h>
+#include <TCP3231.h>
 
 BBI2C rtcBus{};
-DS3231RTC rtc(rtcBus);
+TCP3231 rtc(rtcBus);
