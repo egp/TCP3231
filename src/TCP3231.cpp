@@ -1,4 +1,4 @@
-#include "DS3231RTC.h"
+#include "TCP3231.h"
 
 namespace {
 static const uint8_t kRegSeconds = 0x00;
@@ -24,10 +24,10 @@ static const uint8_t kTimeRegisterCount = 7;
 static const uint8_t kMaxWritePayload = 16;
 }  // namespace
 
-DS3231RTC::DS3231RTC(BBI2C& bus, uint8_t address)
+TCP3231::TCP3231(BBI2C& bus, uint8_t address)
     : bus_(bus), address_(address), lastError_("ok") {}
 
-bool DS3231RTC::begin() {
+bool TCP3231::begin() {
   uint8_t status = 0;
   if (!readRegister(kRegStatus, status)) {
     return false;
@@ -36,7 +36,7 @@ bool DS3231RTC::begin() {
   return true;
 }
 
-bool DS3231RTC::readTime(DateTime& dt) {
+bool TCP3231::readTime(DateTime& dt) {
   uint8_t raw[kTimeRegisterCount] = {0};
 
   if (!readRegisters(kRegSeconds, raw, kTimeRegisterCount)) {
@@ -86,7 +86,7 @@ bool DS3231RTC::readTime(DateTime& dt) {
   return true;
 }
 
-bool DS3231RTC::setTime(const DateTime& dt) {
+bool TCP3231::setTime(const DateTime& dt) {
   if (!isValidDateTime(dt)) {
     setError("invalid date/time");
     return false;
@@ -114,7 +114,7 @@ bool DS3231RTC::setTime(const DateTime& dt) {
   return true;
 }
 
-bool DS3231RTC::readStatus(Status& status) {
+bool TCP3231::readStatus(Status& status) {
   uint8_t raw = 0;
   if (!readRegister(kRegStatus, raw)) {
     return false;
@@ -130,7 +130,7 @@ bool DS3231RTC::readStatus(Status& status) {
   return true;
 }
 
-bool DS3231RTC::clearOscillatorStopFlag() {
+bool TCP3231::clearOscillatorStopFlag() {
   uint8_t raw = 0;
   if (!readRegister(kRegStatus, raw)) {
     return false;
@@ -146,17 +146,17 @@ bool DS3231RTC::clearOscillatorStopFlag() {
   return true;
 }
 
-const char* DS3231RTC::errorString() const {
+const char* TCP3231::errorString() const {
   return lastError_;
 }
 
-bool DS3231RTC::readRegister(uint8_t reg, uint8_t& value) {
+bool TCP3231::readRegister(uint8_t reg, uint8_t& value) {
   return readRegisters(reg, &value, 1);
 }
 
 /***********************/
 
-bool DS3231RTC::readRegisters(uint8_t startReg, uint8_t* data, uint8_t len) {
+bool TCP3231::readRegisters(uint8_t startReg, uint8_t* data, uint8_t len) {
   if (data == nullptr || len == 0) {
     setError("invalid read buffer");
     return false;
@@ -183,11 +183,11 @@ bool DS3231RTC::readRegisters(uint8_t startReg, uint8_t* data, uint8_t len) {
 
 /***********************/
 
-bool DS3231RTC::writeRegister(uint8_t reg, uint8_t value) {
+bool TCP3231::writeRegister(uint8_t reg, uint8_t value) {
   return writeRegisters(reg, &value, 1);
 }
 
-bool DS3231RTC::writeRegisters(uint8_t startReg, const uint8_t* data, uint8_t len) {
+bool TCP3231::writeRegisters(uint8_t startReg, const uint8_t* data, uint8_t len) {
   if (data == nullptr || len == 0) {
     setError("invalid write buffer");
     return false;
@@ -212,15 +212,15 @@ bool DS3231RTC::writeRegisters(uint8_t startReg, const uint8_t* data, uint8_t le
   return true;
 }
 
-uint8_t DS3231RTC::decToBcd(uint8_t value) {
+uint8_t TCP3231::decToBcd(uint8_t value) {
   return static_cast<uint8_t>(((value / 10u) << 4) | (value % 10u));
 }
 
-uint8_t DS3231RTC::bcdToDec(uint8_t value) {
+uint8_t TCP3231::bcdToDec(uint8_t value) {
   return static_cast<uint8_t>(((value >> 4) * 10u) + (value & 0x0Fu));
 }
 
-bool DS3231RTC::isLeapYear(uint16_t year) {
+bool TCP3231::isLeapYear(uint16_t year) {
   if ((year % 400u) == 0u) {
     return true;
   }
@@ -230,7 +230,7 @@ bool DS3231RTC::isLeapYear(uint16_t year) {
   return (year % 4u) == 0u;
 }
 
-uint8_t DS3231RTC::daysInMonth(uint16_t year, uint8_t month) {
+uint8_t TCP3231::daysInMonth(uint16_t year, uint8_t month) {
   switch (month) {
     case 1:
     case 3:
@@ -252,7 +252,7 @@ uint8_t DS3231RTC::daysInMonth(uint16_t year, uint8_t month) {
   }
 }
 
-bool DS3231RTC::isValidDateTime(const DateTime& dt) {
+bool TCP3231::isValidDateTime(const DateTime& dt) {
   if (dt.year < 2000 || dt.year > 2199) {
     return false;
   }
@@ -277,6 +277,6 @@ bool DS3231RTC::isValidDateTime(const DateTime& dt) {
   return true;
 }
 
-void DS3231RTC::setError(const char* message) {
+void TCP3231::setError(const char* message) {
   lastError_ = message;
 }
