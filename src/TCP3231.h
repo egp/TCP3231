@@ -2,7 +2,7 @@
 #define TCP3231_H
 
 #include <Arduino.h>
-#include <BitBang_I2C.h>
+#include <TCP1819.h>
 
 class TCP3231 {
 public:

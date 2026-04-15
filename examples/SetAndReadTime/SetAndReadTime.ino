@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <BitBang_I2C.h>
-#include <TCP3231.h>
+#include <TCP1819.h> // cloned into https://github.com/egp/TCP1819
+#include <TCP3231.h> // 
 
 static const int kRtcSdaPin = 12;
 static const int kRtcSclPin = 13;
