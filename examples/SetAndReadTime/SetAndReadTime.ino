@@ -2,20 +2,20 @@
 #include <BitBang_I2C.h>
 #include <TCP3231.h>
 
-static const int kRtcSdaPin = 10;
-static const int kRtcSclPin = 11;
+static const int kRtcSdaPin = 12;
+static const int kRtcSclPin = 13;
 
 static const uint32_t kI2CFrequencyHz = 100000;
 
 // Operator-editable target time/date.
-static const bool     kSetTimeOnBoot = false;
-static const uint16_t kSetYear       = 2026;
-static const uint8_t  kSetMonth      = 4;
-static const uint8_t  kSetDay        = 12;
-static const uint8_t  kSetHour       = 14;
-static const uint8_t  kSetMinute     = 53;
-static const uint8_t  kSetSecond     = 0;
-static const uint8_t  kSetDayOfWeek  = 7;  // 1..7, user-defined but sequential
+static const bool kSetTimeOnBoot = false;
+static const uint16_t kSetYear = 2026;
+static const uint8_t kSetMonth = 4;
+static const uint8_t kSetDay = 15;
+static const uint8_t kSetHour = 9;
+static const uint8_t kSetMinute = 40;
+static const uint8_t kSetSecond = 0;
+static const uint8_t kSetDayOfWeek = 7;  // 1..7, user-defined but sequential
 
 // Optional: clear OSF after a successful write/read cycle.
 static const bool kClearOscillatorStopFlagAfterSet = false;
@@ -32,8 +32,8 @@ static void printTwoDigits(uint8_t value) {
 
 static void printFourDigits(uint16_t value) {
   if (value < 1000) Serial.print('0');
-  if (value < 100)  Serial.print('0');
-  if (value < 10)   Serial.print('0');
+  if (value < 100) Serial.print('0');
+  if (value < 10) Serial.print('0');
   Serial.print(value);
 }
 
@@ -67,13 +67,7 @@ static void printStatus(const TCP3231::Status& status) {
 }
 
 static bool sameDateTime(const TCP3231::DateTime& a, const TCP3231::DateTime& b) {
-  return a.year == b.year &&
-         a.month == b.month &&
-         a.day == b.day &&
-         a.hour == b.hour &&
-         a.minute == b.minute &&
-         a.second == b.second &&
-         a.dayOfWeek == b.dayOfWeek;
+  return a.year == b.year && a.month == b.month && a.day == b.day && a.hour == b.hour && a.minute == b.minute && a.second == b.second && a.dayOfWeek == b.dayOfWeek;
 }
 
 static void printCurrentStatus() {
@@ -106,6 +100,7 @@ static bool readAndPrintCurrentTime(const char* label, TCP3231::DateTime& dt) {
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  Serial.println("beginning setup()");
 
   memset(&rtcBus, 0, sizeof(rtcBus));
   rtcBus.bWire = 0;
