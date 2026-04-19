@@ -19,6 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         fqbn:
+          - arduino:avr:uno
           - arduino:renesas_uno:minima
           - arduino:renesas_uno:unor4wifi
 

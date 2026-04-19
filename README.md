@@ -1,10 +1,12 @@
 # TCP3231
 
-Arduino library for the Maxim / Analog Devices DS3231 real-time clock using a caller-owned `BBI2C` bus.
+TCP3231 is an Arduino library for the Maxim / Analog Devices DS3231 real-time clock.
 
-## What it does
+The library uses a caller-owned `BBI2C` bus supplied by `TCP1819`. It does not own the bus and does not expose `Wire` in its public API.
 
-TCP3231 provides a small API for the DS3231:
+## Features
+
+TCP3231 provides a small DS3231-focused API to:
 
 - initialize and probe the RTC
 - read date and time
@@ -12,29 +14,36 @@ TCP3231 provides a small API for the DS3231:
 - read status flags
 - clear the oscillator-stop flag
 
-The library does not own the I2C bus. You create and initialize a `BBI2C` bus, then pass it to `TCP3231`.
-
 ## Dependency
 
-TCP3231 uses `TCP1819` for the `BBI2C` type and low-level I2C helpers.
+TCP3231 depends on `TCP1819` for:
+
+- `BBI2C`
+- `I2CInit(...)`
+- low-level I2C read/write helpers
+
+Install both libraries before building examples:
+
+- `TCP3231`
+- `TCP1819`
+
+Example layout:
+
+- `~/Documents/Arduino/libraries/TCP3231`
+- `~/Documents/Arduino/libraries/TCP1819`
 
 ## Public API
-
-```cpp
-#include <Arduino.h>
-#include <TCP1819.h>
-#include <TCP3231.h>
 
 class TCP3231 {
 public:
   struct DateTime {
-    uint16_t year;     // 2000..2199
-    uint8_t month;     // 1..12
-    uint8_t day;       // 1..31
-    uint8_t hour;      // 0..23
-    uint8_t minute;    // 0..59
-    uint8_t second;    // 0..59
-    uint8_t dayOfWeek; // 1..7
+    uint16_t year;      // 2000..2199
+    uint8_t month;      // 1..12
+    uint8_t day;        // 1..31
+    uint8_t hour;       // 0..23
+    uint8_t minute;     // 0..59
+    uint8_t second;     // 0..59
+    uint8_t dayOfWeek;  // 1..7, user-defined but sequential
   };
 
   struct Status {
@@ -54,18 +63,16 @@ public:
   bool clearOscillatorStopFlag();
   const char* errorString() const;
 };
-```
 
 ## Minimal example
 
-```cpp
-#include <Arduino.h>
+#include <string.h>
 #include <TCP1819.h>
 #include <TCP3231.h>
 
 static const int kRtcSdaPin = 12;
 static const int kRtcSclPin = 13;
-static const uint32_t kI2CFrequencyHz = 100000;
+static const uint32_t kI2CFrequencyHz = 100000UL;
 
 BBI2C rtcBus{};
 TCP3231 rtc(rtcBus);
@@ -82,14 +89,16 @@ void setup() {
   if (!rtc.begin()) {
     Serial.print("rtc.begin() failed: ");
     Serial.println(rtc.errorString());
-    while (true) {}
+    while (true) {
+    }
   }
 
   TCP3231::DateTime now{};
   if (!rtc.readTime(now)) {
     Serial.print("readTime failed: ");
     Serial.println(rtc.errorString());
-    while (true) {}
+    while (true) {
+    }
   }
 
   Serial.print(now.year);
@@ -101,7 +110,6 @@ void setup() {
 
 void loop() {
 }
-```
 
 ## Status flags
 
@@ -121,7 +129,7 @@ See:
 
 - `examples/SetAndReadTime/SetAndReadTime.ino`
 
-It shows:
+It demonstrates:
 
 - bus setup
 - RTC probe
@@ -132,9 +140,25 @@ It shows:
 
 ## Notes
 
-- DS3231 default 7-bit address is `0x68`.
-- `dayOfWeek` is user-defined but must be sequential `1..7`.
-- On failure, methods return `false`; call `errorString()` for a short diagnostic.
+- DS3231 default 7-bit address is `0x68`
+- `dayOfWeek` is user-defined but must be sequential `1..7`
+- on failure, methods return `false`; call `errorString()` for a short diagnostic
+
+## Local development
+
+Typical commands:
+
+make ci TCP1819_SRC=../TCP1819
+make compile FQBN=arduino:avr:uno TCP1819_SRC=../TCP1819
+make clean
+
+## CI
+
+GitHub Actions compiles the example on:
+
+- Arduino Uno
+- Arduino Uno R4 Minima
+- Arduino Uno R4 WiFi
 
 ## License
 
