@@ -5,6 +5,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   compile-examples:
     runs-on: ubuntu-latest
@@ -16,8 +23,14 @@ jobs:
           - arduino:renesas_uno:unor4wifi
 
     steps:
-      - name: Check out repository
+      - name: Check out TCP3231
         uses: actions/checkout@v4
+
+      - name: Check out TCP1819 dependency
+        uses: actions/checkout@v4
+        with:
+          repository: egp/TCP1819
+          path: ${{ github.workspace }}/_deps/TCP1819
 
       - name: Install Arduino CLI
         uses: arduino/setup-arduino-cli@v2
@@ -27,6 +40,7 @@ jobs:
       - name: Compile examples
         env:
           FQBN: ${{ matrix.fqbn }}
+          TCP1819_SRC: ${{ github.workspace }}/_deps/TCP1819
         run: |
           chmod +x tools/compile-examples.sh
           ./tools/compile-examples.sh
