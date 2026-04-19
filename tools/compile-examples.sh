@@ -5,7 +5,7 @@ ARDUINO_CLI="${ARDUINO_CLI:-arduino-cli}"
 FQBN="${FQBN:-arduino:renesas_uno:minima}"
 WARNINGS="${WARNINGS:-all}"
 
-SKETCHBOOK_LIBS="${HOME}/Documents/Arduino/libraries"
+SKETCHBOOK_LIBS="${HOME}/Arduino/libraries"
 TCP1819_SRC="${TCP1819_SRC:-}"
 TCP1819_DST="${SKETCHBOOK_LIBS}/TCP1819"
 SIBLING_TCP1819="$(cd .. && pwd)/TCP1819"
